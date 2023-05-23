@@ -37,8 +37,8 @@ class converter:
     self.temp_entry.grid(row=2, padx=10, pady=10)
 
     error = ""
-    self.temp_error = Label(self.temp_frame, text=error, fg="#9C0000")
-    self.temp_error.grid(row=3)
+    self.output_label = Label(self.temp_frame, text=error, fg="#9C0000")
+    self.output_label.grid(row=3)
 
     # Conversion, help and history / export buttons
     self.button_frame = Frame(self.temp_frame)
@@ -58,7 +58,8 @@ class converter:
                                       bg="#009900",
                                       fg=button_fg,
                                       font=button_font,
-                                      width=12)
+                                      width=12,
+                                     command=self.to_farenheit)
     self.to_farenheit_button.grid(row=0, column=1, padx=5, pady=5)
 
     self.to_help_button = Button(self.button_frame,
@@ -100,8 +101,9 @@ class converter:
 
     if has_error == "yes":
       self.var_has_error.set("yes")
-      self.var_has_error.set(error)
+      self.var_feedback.set(error)
       return "invalid"
+
     #if we have no error...
     else:
       # set to 'no' in case of previous errors
@@ -113,12 +115,23 @@ class converter:
 
   # check tempurature is more than -459 and convert it
   def to_celsius(self):
-    self.check_temp(-459)
+    to_convert = self.check_temp(-459)
 
     if to_convert != "invalid":
       # do calculation
-      self.var_feedback.set("converting {} to C :)").format(to_convert)
+      self.var_feedback.set("converting {} to C :)".format(to_convert))
 
+    self.output_answer()
+
+  # check tempurature is more than -459 and convert it
+  def to_farenheit(self):
+    to_convert = self.check_temp(-273)
+
+    if to_convert != "invalid":
+      # do calculation
+      self.var_feedback.set("converting {} to F".format(to_convert))
+
+    self.output_answer()
 
   #shows use output and clears entry widget, ready for next calculation
 
@@ -126,13 +139,15 @@ class converter:
     output = self.var_feedback.get()
     has_error = self.var_has_error.get()
 
-    if var_error == "yes":
+    if has_error == "yes":
       # red text, pink entry box
-      self.temp_error.config(fg="#9C0000", bg="#F8CECC")
+      self.output_label.config(fg="#9C0000")
+      self.temp_entry.config(bg="#F8CECC")
     else:
-      self.temp_error.config(fg="#004C00", bg="#FFFFFF")
+      self.output_label.config(fg="#004C00")
+      self.temp_entry.config(bg="#FFFFFF")
 
-    self.temp_error.config(text=output)
+    self.output_label.config(text=output)
 
 
 # Main Routine
