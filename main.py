@@ -11,6 +11,7 @@ class converter:
     self.var_has_error = StringVar()
     self.var_has_error.set("no")
 
+    self.all_calculations = []
     # commmon format for all buttons
     # Arail size 14 bold, with white text
     button_font = ("Arial", "12", "bold")
@@ -67,7 +68,8 @@ class converter:
                                  bg="#CC6600",
                                  fg=button_fg,
                                  font=button_font,
-                                 width=12)
+                                 width=12,
+                                command=self.to_help)
     self.to_help_button.grid(row=1, column=0, padx=5, pady=5)
 
     self.to_history_button = Button(self.button_frame,
@@ -123,12 +125,12 @@ class converter:
   # check tempurature is valid and convert
   def temp_converter(self, min_val):
     to_convert = self.check_temp(min_val)
-    deg_sign = u'\n{DEGREE SIGN}'
+    deg_sign = u'\N{DEGREE SIGN}'
     set_feedback = "yes"
     answer = ""
     from_to = ""
     
-    if to_convert != "invalid":
+    if to_convert == "invalid":
       set_feedback = "no"
       
     #convert to Celsius
@@ -138,8 +140,7 @@ class converter:
       from_to = "{} F{} is {} C{}"
 
     #convert to Farenheit
-    elif min_val == -273:
-      # do calculation
+    else:
       answer = to_convert * 1.8 + 32
       from_to = "{} C{} is {} F{}"
 
@@ -150,8 +151,12 @@ class converter:
       # create user input output and add to calculation history
       feedback = from_to.format(to_convert, deg_sign,
                                answer, deg_sign)
-    
-    
+      self.var_feedback.set(feedback)
+
+      self.all_calculations.append(feedback)
+
+      # Delete code bellow when history component is working!!
+      print(self.all_calculations)
     self.output_answer()
 
 
